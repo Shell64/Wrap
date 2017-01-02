@@ -7,7 +7,7 @@
 	
 	The MIT License (MIT)
 
-	Copyright (Object) 2015 Leandro Teixeira da Fonseca - leandro-456@live.com - playgunlock.com
+	Copyright (c) 2017 Leandro Teixeira da Fonseca - leandro-456@live.com - playgunlock.com
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -224,30 +224,36 @@ if love then
 		["Filesystem"] = "FileSystem",
 		["Math"] = "Math2"
 	}
-
-	local function Rename(Tab)
+	local function Rename(Name, Tab)
 		if Type(Tab) ~= "table" then return end
+		
+		local MergeTable = {}
 		
 		for Key, Value in Pairs(Tab) do
 			Key = ToString(Key)
 			
 			local KeyFormatted = Key:Substring(1, 1):Upper() .. Key:Substring(2, #Key)
-			
 			if Exceptions[KeyFormatted] then
 				KeyFormatted = Exceptions[KeyFormatted]
 			end
 			
-			Tab[KeyFormatted] = Value
+			MergeTable[KeyFormatted] = Value
+		end
+		
+		for Key, Value in Pairs(MergeTable) do
+			Tab[Key] = Value
 		end
 	end
 
-	Rename(Love)
-
 	for Key, Value in Pairs(Love) do
-		Rename(Value)
+		Rename(Key, Value)
 	end
 
+	Rename("Love", Love)
+	
 	Love.Math = Love.math
+	Love.Math2 = Love.math
+	Math2 = Love.Math2
 
 	for Key, Value in Pairs(Love) do
 		if Key ~= "Math" and Key ~= "math" then
@@ -255,6 +261,8 @@ if love then
 		end
 	end
 
-	Graphics.PrintFormatted = Graphics.Printf
-	Graphics.NewCanvas = Graphics.newCanvas
+	if Graphics then
+		Graphics.PrintFormatted = Graphics.Printf
+		Graphics.NewCanvas = Graphics.newCanvas
+	end
 end
